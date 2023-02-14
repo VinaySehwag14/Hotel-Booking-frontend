@@ -9,6 +9,8 @@ import { useLocation } from "react-router-dom";
 import Featured from "./components/featured/Featured";
 import PropertyList from "./components/PropertyList/PropertyList";
 import FeaturedProperties from "./components/featuredProperties/FeaturedProperties";
+import MailList from "./components/mailList/MailList";
+import Footer from "./components/Footer";
 
 const Layout = () => {
   return (
@@ -23,6 +25,8 @@ const Layout = () => {
         <PropertyList />
         <h1 className="w-[1024px] text-xl font-bold">Homes guests love</h1>
         <FeaturedProperties />
+        <MailList />
+        <Footer />
       </div>
     </div>
   );

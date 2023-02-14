@@ -7,7 +7,6 @@ import {
   faTaxi,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import "./Header.css";
 import { DateRange } from "react-date-range";
 import { useState } from "react";
 import "react-date-range/dist/styles.css"; // main css file
@@ -118,7 +117,7 @@ const Header = () => {
                     onChange={(item) => setDate([item.selection])}
                     moveRangeOnFirstSelection={false}
                     ranges={date}
-                    className="absolute top-12 z-10"
+                    className="absolute top-12 z-20"
                   />
                 )}
               </div>
@@ -129,7 +128,7 @@ const Header = () => {
                   className="text-gray-600"
                 >{`${options.adult} adult · ${options.children} children · ${options.room} room`}</span>
                 {openOptions && (
-                  <div className="z-10 absolute top-12 bg-white text-gray-500 border rounded-md shadow-[ 0px_0px_10px_-5px_rgba(0,0,0,0.4)]">
+                  <div className="z-20 absolute top-12 bg-white text-gray-500 border rounded-md shadow-[ 0px_0px_10px_-5px_rgba(0,0,0,0.4)]">
                     <div className="w-[200px] flex justify-between m-2.5">
                       <span className="iptionText">Adult</span>
                       <div className="flex items-center gap-2.5 text-xs text-black ">
@@ -204,7 +203,7 @@ const Header = () => {
                 )}
               </div>
               <div className="flex items-center gap-2.5">
-                <button className="bg-blue-900 text-white font-medium p-2.5">
+                <button className="bg-blue-900 text-white font-medium p-2.5 px-8 pr-8">
                   Search
                 </button>
               </div>

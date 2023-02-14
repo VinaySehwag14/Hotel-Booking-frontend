@@ -7,6 +7,8 @@ import Navbar from "./components/Navbar";
 import Header from "./components/Header/Header";
 import { useLocation } from "react-router-dom";
 import Featured from "./components/featured/Featured";
+import PropertyList from "./components/PropertyList/PropertyList";
+import FeaturedProperties from "./components/featuredProperties/FeaturedProperties";
 
 const Layout = () => {
   return (
@@ -15,6 +17,12 @@ const Layout = () => {
       <Header />
       <div className="mt-12 flex flex-col items-center gap-[30px]">
         <Featured />
+        <h1 className="w-[1024px] text-xl font-bold">
+          Browse by property type
+        </h1>
+        <PropertyList />
+        <h1 className="w-[1024px] text-xl font-bold">Homes guests love</h1>
+        <FeaturedProperties />
       </div>
     </div>
   );

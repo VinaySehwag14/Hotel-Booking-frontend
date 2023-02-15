@@ -14,7 +14,7 @@ import "react-date-range/dist/theme/default.css"; // theme css file
 import { format } from "date-fns";
 import { useLocation, useNavigate } from "react-router-dom";
 
-const Header = () => {
+const Header = ({ type }) => {
   //* getting current path name
   const location = useLocation();
   //*for opening and closing date component
@@ -55,7 +55,7 @@ const Header = () => {
     <div className="flex bg-blue-900 text-white justify-center relative">
       <div
         className={`w-full max-w-5xl mt-5 mx-0  ${
-          location.pathname === "/hotels" ? "mb-0" : "mb-24"
+          type === "/list" ? "mb-0" : "mb-24"
         }`}
       >
         <div className="flex gap-10 mb-12">
@@ -80,9 +80,7 @@ const Header = () => {
             <span>Airport Taxi</span>
           </div>
         </div>
-        {location.pathname === "/hotels" ? (
-          ""
-        ) : (
+        {type !== "list" && (
           <>
             <h1 className="text-5xl font-semibold">
               A lifetime of discounts? It's Genius.

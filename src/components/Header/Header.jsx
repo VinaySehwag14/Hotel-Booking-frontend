@@ -12,7 +12,7 @@ import { useState } from "react";
 import "react-date-range/dist/styles.css"; // main css file
 import "react-date-range/dist/theme/default.css"; // theme css file
 import { format } from "date-fns";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const Header = () => {
   //* getting current path name
@@ -34,7 +34,14 @@ const Header = () => {
     children: 0,
     room: 1,
   });
+  //*for setting destination
+  const [destination, setDestination] = useState("");
 
+  const navigate = useNavigate();
+
+  const handleSearch = () => {
+    navigate("/hotels", { state: { destination, date, options } });
+  };
   const handleOption = (name, operation) => {
     setOptions((prev) => {
       return {
@@ -95,6 +102,7 @@ const Header = () => {
                   type="text"
                   placeholder="Where are you going?"
                   className="border-none outline-none text-black"
+                  onChange={(e) => setDestination(e.target.value)}
                 />
               </div>
               <div className="flex items-center gap-2.5">
@@ -118,6 +126,7 @@ const Header = () => {
                     moveRangeOnFirstSelection={false}
                     ranges={date}
                     className="absolute top-12 z-20"
+                    minDate={new Date()}
                   />
                 )}
               </div>
@@ -203,7 +212,10 @@ const Header = () => {
                 )}
               </div>
               <div className="flex items-center gap-2.5">
-                <button className="bg-blue-900 text-white font-medium p-2.5 px-8 pr-8">
+                <button
+                  onClick={handleSearch}
+                  className="bg-blue-900 text-white font-medium p-2.5 px-8 pr-8"
+                >
                   Search
                 </button>
               </div>

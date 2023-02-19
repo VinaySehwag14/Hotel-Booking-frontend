@@ -9,14 +9,38 @@ import {
   faCircleXmark,
   faLocationDot,
 } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useContext, useState } from "react";
 import Navbar from "../components/Navbar";
 import Header from "../components/Header/Header";
 import MailList from "../components/mailList/MailList";
 import Footer from "../components/Footer";
+import API from "../backend";
+import useFetch from "../hooks/useFetch";
+import { SearchContext } from "../redux/SearchContext";
 const Hotel = () => {
+  //* for getting url param
+  const location = useLocation();
+  const id = location.pathname.split("/")[2];
+  console.log(id);
+  const { data, loading, error, reFetch } = useFetch(
+    `${API}/hotels/find/${id}`
+  );
+
+  const { dates, options } = useContext(SearchContext);
+
+  const MILLISECONDS_PER_DAY = 1000 * 60 * 60 * 24;
+  function dayDifference(date1, date2) {
+    const timeDiff = Math.abs(date2.getTime() - date1.getTime());
+    const diffDays = Math.ceil(timeDiff / MILLISECONDS_PER_DAY);
+    return diffDays;
+  }
+
+  const days = dayDifference(dates[0].endDate, dates[0].startDate);
+
   const [slideNumber, setSlideNumber] = useState(0);
   const [open, setOpen] = useState(false);
+  console.log(data, "😍🙌");
 
   const photos = [
     {
@@ -58,97 +82,91 @@ const Hotel = () => {
     <div>
       <Navbar />
       <Header type="list" />
-      <div className="flex flex-col items-center mt-5">
-        {open && (
-          <div className="sticky top-0 left-0 w-screen h-screen bg-black bg-opacity-50 z-50 flex items-center ">
-            <FontAwesomeIcon
-              icon={faCircleXmark}
-              className="absolute top-5 right-5 text-3xl text-gray-300 cursor-pointer"
-              onClick={() => setOpen(false)}
-            />
-            <FontAwesomeIcon
-              icon={faCircleArrowLeft}
-              className="m-5 text-5xl text-gray-300 cursor-pointer"
-              onClick={() => handleMove("l")}
-            />
-            <div className="w-full h-full flex justify-center items-center">
-              <img
-                src={photos[slideNumber].src}
-                alt=""
-                className="w-[80%] h-[80vh]"
+      {loading ? (
+        "loading"
+      ) : (
+        <div className="flex flex-col items-center mt-5">
+          {open && (
+            <div className="sticky top-0 left-0 w-screen h-screen bg-black bg-opacity-50 z-50 flex items-center ">
+              <FontAwesomeIcon
+                icon={faCircleXmark}
+                className="absolute top-5 right-5 text-3xl text-gray-300 cursor-pointer"
+                onClick={() => setOpen(false)}
               />
-            </div>
-            <FontAwesomeIcon
-              icon={faCircleArrowRight}
-              className="m-5 text-5xl text-gray-300 cursor-pointer"
-              onClick={() => handleMove("r")}
-            />
-          </div>
-        )}
-        <div className="w-full max-w-5xl flex flex-col gap-3 relative">
-          <button className="absolute top-2.5 right-0 border-none py-2.5 px-5 bg-blue-700 text-white rounded-md cursor-pointer">
-            Reserve or Book Now!
-          </button>
-          <h1 className="text-2xl font-bold">Tower Street Apartments</h1>
-          <div className="text-xs flex items-center gap-2.5">
-            <FontAwesomeIcon icon={faLocationDot} />
-            <span>Elton St 125 New york</span>
-          </div>
-          <span className="text-blue-700 font-medium">
-            Excellent location – 500m from center
-          </span>
-          <span className="text-green-600 font-medium">
-            Book a stay over $114 at this property and get a free airport taxi
-          </span>
-          <div className="flex flex-wrap justify-between">
-            {photos.map((photo, i) => (
-              <div className="w-1/3" key={i}>
+              <FontAwesomeIcon
+                icon={faCircleArrowLeft}
+                className="m-5 text-5xl text-gray-300 cursor-pointer"
+                onClick={() => handleMove("l")}
+              />
+              <div className="w-full h-full flex justify-center items-center">
                 <img
-                  onClick={() => handleOpen(i)}
-                  src={photo.src}
+                  src={photos[slideNumber]}
                   alt=""
-                  className="w-full object-cover cursor-pointer"
+                  className="w-[80%] h-[80vh]"
                 />
               </div>
-            ))}
-          </div>
-          <div className="flex justify-between gap-5 mt-5">
-            <div className="flex-[3]">
-              <h1 className="text-2xl font-bold">Stay in the heart of City</h1>
-              <p className="text-sm mt-5">
-                Located a 5-minute walk from St. Florian's Gate in Krakow, Tower
-                Street Apartments has accommodations with air conditioning and
-                free WiFi. The units come with hardwood floors and feature a
-                fully equipped kitchenette with a microwave, a flat-screen TV,
-                and a private bathroom with shower and a hairdryer. A fridge is
-                also offered, as well as an electric tea pot and a coffee
-                machine. Popular points of interest near the apartment include
-                Cloth Hall, Main Market Square and Town Hall Tower. The nearest
-                airport is John Paul II International Kraków–Balice, 16.1 km
-                from Tower Street Apartments, and the property offers a paid
-                airport shuttle service.
-              </p>
+              <FontAwesomeIcon
+                icon={faCircleArrowRight}
+                className="m-5 text-5xl text-gray-300 cursor-pointer"
+                onClick={() => handleMove("r")}
+              />
             </div>
-            <div className="flex-1 bg-blue-100 p-5 flex flex-col gap-5">
-              <h1 className="text-base font-bold text-gray-500">
-                Perfect for a 9-night stay!
-              </h1>
-              <span className="text-xs">
-                Located in the real heart of Krakow, this property has an
-                excellent location score of 9.8!
-              </span>
-              <h2 className="font-light">
-                <b>$945</b> (9 nights)
-              </h2>
-              <button className="border-none py-3 px-5 bg-blue-700 text-white font-bold cursor-pointer rounded-md">
-                Reserve or Book Now!
-              </button>
+          )}
+          <div className="w-full max-w-5xl flex flex-col gap-3 relative">
+            <button className="absolute top-2.5 right-0 border-none py-2.5 px-5 bg-blue-700 text-white rounded-md cursor-pointer">
+              Reserve or Book Now!
+            </button>
+            <h1 className="text-2xl font-bold">{data.name}</h1>
+            <div className="text-xs flex items-center gap-2.5">
+              <FontAwesomeIcon icon={faLocationDot} />
+              <span>{data.address}</span>
+            </div>
+            <span className="text-blue-700 font-medium">
+              Excellent location – {data.distance}m from center
+            </span>
+            <span className="text-green-600 font-medium">
+              Book a stay over ${data.cheapestPrice} at this property and get a
+              free airport taxi
+            </span>
+            <div className="flex flex-wrap justify-between">
+              {data.photos?.map((photo, i) => (
+                <div className="w-1/3" key={i}>
+                  <img
+                    onClick={() => handleOpen(i)}
+                    src={photo}
+                    alt=""
+                    className="w-full object-cover cursor-pointer"
+                  />
+                </div>
+              ))}
+            </div>
+            <div className="flex justify-between gap-5 mt-5">
+              <div className="flex-[3]">
+                <h1 className="text-2xl font-bold">{data.title}</h1>
+                <p className="text-sm mt-5">{data.desc}</p>
+              </div>
+              <div className="flex-1 bg-blue-100 p-5 flex flex-col gap-5">
+                <h1 className="text-base font-bold text-gray-500">
+                  Perfect for a {days}-night stay!
+                </h1>
+                <span className="text-xs">
+                  Located in the real heart of Krakow, this property has an
+                  excellent location score of 9.8!
+                </span>
+                <h2 className="font-light">
+                  <b>${days * data?.cheapestPrice * options.room}</b> ({days}{" "}
+                  nights)
+                </h2>
+                <button className="border-none py-3 px-5 bg-blue-700 text-white font-bold cursor-pointer rounded-md">
+                  Reserve or Book Now!
+                </button>
+              </div>
             </div>
           </div>
+          <MailList />
+          <Footer />
         </div>
-        <MailList />
-        <Footer />
-      </div>
+      )}
     </div>
   );
 };

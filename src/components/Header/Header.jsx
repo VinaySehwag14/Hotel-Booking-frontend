@@ -8,11 +8,13 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { DateRange } from "react-date-range";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import "react-date-range/dist/styles.css"; // main css file
 import "react-date-range/dist/theme/default.css"; // theme css file
 import { format } from "date-fns";
 import { useLocation, useNavigate } from "react-router-dom";
+import { SearchContext } from "../../redux/SearchContext";
+import { AuthContext } from "../../redux/AuthContext";
 
 const Header = ({ type }) => {
   //* getting current path name
@@ -20,7 +22,7 @@ const Header = ({ type }) => {
   //*for opening and closing date component
   const [openDate, setOpenDate] = useState(false);
   //*setting date component
-  const [date, setDate] = useState([
+  const [dates, setDates] = useState([
     {
       startDate: new Date(),
       endDate: new Date(),
@@ -39,9 +41,16 @@ const Header = ({ type }) => {
 
   const navigate = useNavigate();
 
+  const { user } = useContext(AuthContext);
+
+  const { dispatch } = useContext(SearchContext);
+
   const handleSearch = () => {
-    navigate("/hotels", { state: { destination, date, options } });
+    dispatch({ type: "NEW_SEARCH", payload: { destination, dates, options } });
+    navigate("/hotels", { state: { destination, dates, options } });
   };
+
+  //*
   const handleOption = (name, operation) => {
     setOptions((prev) => {
       return {
@@ -89,9 +98,11 @@ const Header = ({ type }) => {
               Get rewarded for your travels – unlock instant savings of 10% or
               more with a free Lamabooking account
             </p>
-            <button className="bg-blue-500 text-white font-bold p-2.5">
-              Sign in / Register
-            </button>
+            {!user && (
+              <button className="bg-blue-500 text-white font-bold p-2.5">
+                Sign in / Register
+              </button>
+            )}
             <div className="h-14 bg-white border-[5px] border-orange-300 flex items-center justify-around py-2.5 px-0 rounded absolute -bottom-7 w-full max-w-5xl">
               {/* my-2.5  rounded  bottom-6 w-full max-w-5xl */}
               <div className="flex items-center gap-2.5">
@@ -112,17 +123,17 @@ const Header = ({ type }) => {
                   onClick={() => setOpenDate(!openDate)}
                   className="text-gray-600"
                 >
-                  {`${format(date[0].startDate, "dd/MM/yyyy")}to  ${format(
-                    date[0].endDate,
+                  {`${format(dates[0].startDate, "dd/MM/yyyy")}to  ${format(
+                    dates[0].endDate,
                     "dd/MM/yyyy"
                   )}`}{" "}
                 </span>
                 {openDate && (
                   <DateRange
                     editableDateInputs={true}
-                    onChange={(item) => setDate([item.selection])}
+                    onChange={(item) => setDates([item.selection])}
                     moveRangeOnFirstSelection={false}
-                    ranges={date}
+                    ranges={dates}
                     className="absolute top-12 z-20"
                     minDate={new Date()}
                   />

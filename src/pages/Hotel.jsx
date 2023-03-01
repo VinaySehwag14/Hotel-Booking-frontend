@@ -1,7 +1,3 @@
-// import Navbar from "../../components/navbar/Navbar";
-// import Header from "../../components/header/Header";
-// import MailList from "../../components/mailList/MailList";
-// import Footer from "../../components/footer/Footer";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCircleArrowLeft,
@@ -18,6 +14,8 @@ import Footer from "../components/Footer";
 import API from "../backend";
 import useFetch from "../hooks/useFetch";
 import { SearchContext } from "../redux/SearchContext";
+import { AuthContext } from "../redux/AuthContext";
+import Reserve from "../components/Reserve";
 const Hotel = () => {
   //* for getting url param
   const location = useLocation();
@@ -26,6 +24,9 @@ const Hotel = () => {
   const { data, loading, error, reFetch } = useFetch(
     `${API}/hotels/find/${id}`
   );
+
+  const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const { dates, options } = useContext(SearchContext);
 
@@ -40,7 +41,7 @@ const Hotel = () => {
 
   const [slideNumber, setSlideNumber] = useState(0);
   const [open, setOpen] = useState(false);
-  console.log(data, "😍🙌");
+  const [openModal, setOpenModal] = useState(false);
 
   const photos = [
     {
@@ -77,6 +78,15 @@ const Hotel = () => {
     }
 
     setSlideNumber(newSlideNumber);
+  };
+
+  //* for opening model if login and to login page if not
+  const handleClick = () => {
+    if (user) {
+      setOpenModal(true);
+    } else {
+      navigate("/login");
+    }
   };
   return (
     <div>
@@ -157,7 +167,10 @@ const Hotel = () => {
                   <b>${days * data?.cheapestPrice * options.room}</b> ({days}{" "}
                   nights)
                 </h2>
-                <button className="border-none py-3 px-5 bg-blue-700 text-white font-bold cursor-pointer rounded-md">
+                <button
+                  onClick={handleClick}
+                  className="border-none py-3 px-5 bg-blue-700 text-white font-bold cursor-pointer rounded-md"
+                >
                   Reserve or Book Now!
                 </button>
               </div>
@@ -167,6 +180,7 @@ const Hotel = () => {
           <Footer />
         </div>
       )}
+      {openModal && <Reserve setOpen={setOpenModal} hotelId={id} />}
     </div>
   );
 };

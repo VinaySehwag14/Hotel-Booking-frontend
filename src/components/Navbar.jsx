@@ -35,7 +35,7 @@ const Navbar = () => {
             </svg>
           </button>
         </div>
-        <div class="w-full flex-grow lg:flex lg:items-center lg:w-auto flex justify-end ">
+        <div class="w-full flex-grow lg:flex lg:items-center lg:w-auto flex justify-end text-white ">
           {user ? (
             user.username
           ) : (

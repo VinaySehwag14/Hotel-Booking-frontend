@@ -96,7 +96,7 @@ const Header = ({ type }) => {
             </h1>
             <p className="my-5 mx-0">
               Get rewarded for your travels – unlock instant savings of 10% or
-              more with a free Lamabooking account
+              more with a free Swift account
             </p>
             {!user && (
               <button className="bg-blue-500 text-white font-bold p-2.5">
